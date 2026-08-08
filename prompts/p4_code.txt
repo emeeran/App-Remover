@@ -1,0 +1,5 @@
+You are implementing the approved specification.
+Prerequisite: docs/03-review/PASS must exist (the spec passed review).
+Input: read docs/02-spec/SPEC.md.
+Task: Generate production-ready code in backend/src/app.ts.
+Rules: Use strict TypeScript, Express router patterns, and Zod for validation. Use 'npm' for dependencies. Follow the conventions in CLAUDE.md. Use the Edit/Write tools to create the code — do not only print it.

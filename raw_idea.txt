@@ -1,0 +1,4 @@
+# My App Idea
+Target: [Who is this for?]
+Features: [List core features]
+Tech: node

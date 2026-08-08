@@ -1,0 +1,15 @@
+# General
+.DS_Store
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+backend/.venv/
+
+# Node
+node_modules/
+dist/
+
+# Go
+backend/bin/
