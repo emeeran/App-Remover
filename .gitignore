@@ -13,3 +13,7 @@ dist/
 
 # Go
 backend/bin/
+
+# Local-only working artifacts (generated, not shipped)
+local/
+.pipeline/
