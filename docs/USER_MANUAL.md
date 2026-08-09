@@ -39,16 +39,19 @@ The binary installs to `/usr/bin/app-remover`.
 
 ## 3. The window at a glance
 
-The window has two panels and a history area:
-
-- **Left panel — Inventory:** every application App Remover detected, with a
-  filter box. Each row shows the name, version, and a status:
+- **App bar (top):** the App Remover logo and name, with buttons for the
+  **🌙/☀ theme toggle**, **About**, **History**, and **Refresh**.
+- **Meta line:** a quick status readout — database health, total / removable /
+  protected counts, and how many package sources were detected (e.g. `6/8 sources`).
+- **Left panel — Inventory:** every detected application with a filter box. Each
+  row shows the name with a `version · source` subtitle and a status:
   - **removable** — can be processed.
   - **🔒 protected** — on the non-overridable blocklist; cannot be removed.
-- **Right panel — Detail:** the residue scan, the removal plan, and the job, for
-  whichever application you clicked.
-- **Header:** a database status dot, chips showing which package backends were
-  detected, a **Refresh** button, and a **History** button.
+- **Right panel — Detail:** the residue scan, removal plan, and job for the app
+  you clicked, headed by a **workflow stepper** (Scan → Plan → Approve → Remove)
+  that tracks your progress through the flow.
+- **About** and **History** open as modal dialogs (close with ✕, the backdrop,
+  or the **Esc** key).
 
 ---
 
@@ -118,8 +121,9 @@ reinstalled are listed as *deferred*.
 - **Snapshots + auto-rollback.** Every removal captures a snapshot first. If any
   step fails, the job is automatically rolled back from that snapshot.
 - **Least privilege.** Removal runs through `pkexec`/polkit per operation (no
-  persistent root shell). Identifiers are validated against per-backend
-  allowlists before any command runs.
+  persistent root shell), using argument arrays (no shell). apt package names
+  are validated against a strict allowlist when scanned; extending that
+  execution-boundary validation to every backend is tracked in `AUDIT.md`.
 - **Tamper-evident audit.** Each finished job appends a hash-chained record; the
   chain detects after-the-fact tampering.
 
