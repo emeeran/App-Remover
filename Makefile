@@ -6,7 +6,7 @@
 
 CLAUDE_FLAGS := claude -p --permission-mode acceptEdits
 
-.PHONY: help setup domain reqs spec review code test all
+.PHONY: help setup domain reqs spec review code lint test all
 
 help: ## Show available targets
 	@awk 'BEGIN {FS = ":.*##"; printf "SDD Pipeline — make targets:\n\n"} /^[a-zA-Z_-]+:.*##/ { printf "  \033[36m%-8s\033[0m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
@@ -37,6 +37,10 @@ review: spec ## Stage 5 - PASS/FAIL gate on SPEC.md (blocks 'code' on FAIL)
 
 code: review ## Stage 6 - implement SPEC.md (requires review PASS)
 	$(CLAUDE_FLAGS) "$$(cat prompts/p4_code.txt)"
+
+lint: ## Type-check backend TypeScript (tsc --noEmit)
+	@if [ -f backend/package.json ]; then cd backend && npx tsc --noEmit; \
+	else echo "No recognized backend in backend/" >&2; exit 1; fi
 
 test: ## Run the backend test suite (auto-detects stack)
 	@if [ -f backend/pyproject.toml ]; then cd backend && uv run pytest tests/ -v; \

@@ -1,0 +1,14 @@
+{
+  // Produces the runnable CJS build in dist/. Extends the strict base;
+  // only flips on emit + output dir, and drops declaration files
+  // (a backend server doesn't ship .d.ts). src only — tests aren't built.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "src",
+    "outDir": "dist",
+    "declaration": false,
+    "declarationMap": false
+  },
+  "include": ["src"]
+}

@@ -9,7 +9,7 @@
     // See also https://aka.ms/tsconfig/module
     "module": "nodenext",
     "target": "esnext",
-    "types": [],
+    "types": ["node", "jest"],
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -35,7 +35,11 @@
     // Recommended Options
     "strict": true,
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
+    // verbatimModuleSyntax is incompatible with `module: nodenext` + `type: commonjs`
+    // (SPEC §0 stack): TS error 1295 forbids ESM import/export in a CommonJS file under
+    // verbatim emission. Relaxed here so idiomatic `import`/`export` transpiles to CJS;
+    // all other strict flags (exactOptionalPropertyTypes, noUncheckedIndexedAccess, etc.) stay on.
+    "verbatimModuleSyntax": false,
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
