@@ -1,0 +1,39 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "App Remover",
+  "version": "0.1.0",
+  "identifier": "com.appremover.desktop",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../build"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "App Remover",
+        "width": 1100,
+        "height": 750
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["deb"],
+    "publisher": "app-remover",
+    "category": "Utility",
+    "shortDescription": "Safely remove applications and their residue across package managers",
+    "resources": { "../../docs/USER_MANUAL.md": "USER_MANUAL.md" },
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}
