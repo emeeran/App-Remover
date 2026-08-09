@@ -50,4 +50,23 @@ the destructive core without root/polkit/CI-for-desktop in the dev environment.
 - Append-only, hash-chained audit; SHA-256 snapshot manifest + verify-before-restore (NFR-15).
 - Protected-package blocklist (D7) enforced at scan/plan creation.
 
-(Phase 5 may append a "Missed by pipeline, caught by blind review" section.)
+(Phase 5 reconciliation below.)
+
+## Missed by pipeline, caught by blind review
+
+Genuine Phase 4 misses — logged here rather than quietly folded into Phase 4's
+numbers. (Full verbatim review: `.pipeline/blind-review.md`.)
+
+- [ ] **`audit.rs` — the hash chain is never verified on read.** `load()`/`recent()` return records without recomputing/validating `hash = SHA256(prev || canonical)`. Tamper-evidence is write-only; a DB edit would be undetectable. Blind: MEDIUM. Fix: add `verify_chain()` used when reading history.
+- [ ] **`snapshot.rs` `copy_dir`/`hash_tree` — no symlink-loop or depth guard.** A symlink cycle (or a link pointing outside the captured tree) could make capture/restore recurse unbounded or escape the tree. Blind: HIGH. Partially covered by the execution-boundary blocker, but the loop/depth aspect was missed. Fix: `walkdir` with `follow_links(false)` + a depth cap.
+- [ ] **`lib.rs:3` `#![allow(dead_code)]` masks unused code.** Added during scaffolding; it now hides every unused item (including spec enum variants never constructed). Blind: MEDIUM. Phase 2 noted the variants but not that the blanket `allow` is itself the smell. Fix: drop the crate-level allow; annotate only the deliberate spec-forward items.
+- [ ] **`planner.rs` / `backends/*` — non-apt reverse-dependency impact is empty.** snap/flatpak/pip/npm/systemd adapters return `Vec::new()` for `reverse_deps`, so removing them skips the dependency-impact/verdict check entirely. Blind: HIGH. Fix: implement per-backend rdep checks, or mark non-apt removals `risky`/`manual-review` pending that data.
+
+## Higher-confidence findings (both pipeline and blind review agree)
+Execution-boundary validation gap (blind's "injection points" / "unsafe fs
+access" / "no boundary checking" all reduce to the AUDIT blocker on
+`executor.rs`); destructive path untested; no job timeout / orphan recovery;
+no transactions. These are corroborated, not new.
+
+## Open questions (disagreements to surface, not silently resolve)
+- **TOCTOU in `delete_path`/`restore_file`; "snapshot could copy sensitive files"; "scan has no authz"; "DB unencrypted"** — blind review rates these CRITICAL/HIGH; Phase 4 rated them **accepted risk** on the assumption this is a single-user desktop GUI (an attacker who can race the FS, set `HOME`, or write the local DB already has the user's privileges). **The correct severity depends on scope:** single-user GUI → pipeline's call stands; if this could ever run as a multi-user service or a SUID helper, the blind review is right and they become blockers. **Human decision needed.**
