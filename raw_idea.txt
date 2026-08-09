@@ -1,4 +1,7 @@
-# My App Idea
-Target: [Who is this for?]
-Features: [List core features]
+# App-Remover, 
+Target: Ubuntu users
+Features: 
+	- Like "Revo uninstaller" for windows, feature rich yet minimal in design
+	- When clicked on icon in desktop search to get to know which type of installation, based on the finding, should purge all associated with the application without breaking any other
+
 Tech: node
